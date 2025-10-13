@@ -1,34 +1,35 @@
 package codes.smit.listeners;
 
+import codes.smit.services.DMService;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+import codes.smit.services.AnnouncementService;
 
 public class DMListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         // Ignore messages from bots
-        if (event.getAuthor().isBot()) {
-            return;
-        }
+        if (event.getAuthor().isBot()) return;
 
-        // Check if the message is from a private channel (DM)
+        // Only handle DMs
         if (event.getChannel().getType() == ChannelType.PRIVATE) {
             String message = event.getMessage().getContentRaw();
-            String authorName = event.getAuthor().getName();
 
-            // Make an array of message lines
+            // Split into lines (expects at least 3 lines: channelId, title, description)
             String[] lines = message.split("\n");
 
+            if (lines.length < 3) {
+                event.getChannel()
+                        .sendMessage("⚠️ Please provide 3 lines:\n1) Channel ID\n2) Title\n3) Description")
+                        .queue();
+                return;
+            }
 
-            System.out.println("First line: " + lines[0]);
-            System.out.println("Second line: " + lines[1]);
-
-            // Respond to the DM
-            event.getChannel().sendMessage("First line: " + lines[0] + "\n" + "Second line: " + lines[1])
-                    .queue();
-
+            // Call the AnnouncementService
+            AnnouncementService.postAnnouncement(event.getAuthor(), lines);
         }
     }
 }
