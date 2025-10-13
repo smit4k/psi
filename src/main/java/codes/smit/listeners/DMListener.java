@@ -18,10 +18,16 @@ public class DMListener extends ListenerAdapter {
             String message = event.getMessage().getContentRaw();
             String authorName = event.getAuthor().getName();
 
-            System.out.println("DM received from " + authorName + ": " + message);
+            // Make an array of message lines
+            String[] lines = message.split("\n");
+
+
+            System.out.println("First line: " + lines[0]);
+            System.out.println("Second line: " + lines[1]);
 
             // Respond to the DM
-            event.getChannel().sendMessage("Message received: " + message).queue();
+            event.getChannel().sendMessage("First line: " + lines[0] + "\n" + "Second line: " + lines[1])
+                    .queue();
 
         }
     }
