@@ -37,7 +37,7 @@ public class DMListener extends ListenerAdapter {
 
             // Send confirmation to user with preview
             event.getChannel()
-                    .sendMessage("✅ Posting announcement to channel `" + lines[0] + "`:")
+                    .sendMessage("Preview announcement embed for channel:")
                     .setEmbeds(embed.build())
                     .queue();
 
