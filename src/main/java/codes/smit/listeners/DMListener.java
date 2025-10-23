@@ -1,11 +1,11 @@
 package codes.smit.listeners;
 
-import codes.smit.services.DMService;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
 import codes.smit.services.AnnouncementService;
+import java.awt.Color;
 
 public class DMListener extends ListenerAdapter {
 
@@ -28,8 +28,21 @@ public class DMListener extends ListenerAdapter {
                 return;
             }
 
+            // Create preview embed
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setTitle(lines[1]);
+            embed.setDescription(lines[2]);
+            embed.setColor(Color.MAGENTA);
+            embed.setFooter("Sent by " + event.getAuthor().getName());
+
+            // Send confirmation to user with preview
+            event.getChannel()
+                    .sendMessage("✅ Posting announcement to channel `" + lines[0] + "`:")
+                    .setEmbeds(embed.build())
+                    .queue();
+
             // Call the AnnouncementService
-            AnnouncementService.postAnnouncement(event.getAuthor(), lines);
+            AnnouncementService.postEmbedAnnouncement(event.getAuthor(), lines[0], embed);
         }
     }
 }
